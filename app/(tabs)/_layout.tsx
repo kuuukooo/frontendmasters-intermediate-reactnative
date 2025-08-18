@@ -1,8 +1,14 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
+
+const hasFinishedOnboarding = true;
 
 export default function RootLayout() {
+  if (!hasFinishedOnboarding) {
+    return <Redirect href="/onboarding" />;
+  }
+
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "#29b365" }}>
       <Tabs.Screen
