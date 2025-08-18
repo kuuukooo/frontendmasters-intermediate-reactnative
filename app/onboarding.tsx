@@ -1,10 +1,20 @@
+import { PlantlyButton } from "@/components/PlantlyButton";
+import { useUserStore } from "@/store/userStore";
 import { theme } from "@/theme";
-import { StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, View } from "react-native";
 
 export default function OnboardingScreen() {
+  const router = useRouter();
+  const toggleHasOnboarded = useUserStore((state) => state.toggleHasOnboarded);
+
+  const handlePress = () => {
+    toggleHasOnboarded();
+    router.replace("/");
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Onboarding</Text>
+      <PlantlyButton title="Dejame entrar!" onPress={handlePress} />
     </View>
   );
 }
@@ -15,8 +25,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.colorWhite,
-  },
-  text: {
-    fontSize: 24,
   },
 });

@@ -1,10 +1,13 @@
+import { useUserStore } from "@/store/userStore";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Redirect, Tabs } from "expo-router";
 
-const hasFinishedOnboarding = true;
-
 export default function RootLayout() {
+  const hasFinishedOnboarding = useUserStore(
+    // eslint-disable-next-line prettier/prettier
+    (state) => state.hasFinishedOnboarding
+  );
   if (!hasFinishedOnboarding) {
     return <Redirect href="/onboarding" />;
   }

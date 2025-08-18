@@ -1,10 +1,16 @@
+import { PlantlyButton } from "@/components/PlantlyButton";
+import { useUserStore } from "@/store/userStore";
 import { theme } from "@/theme";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function ProfileScreen() {
+  const toggleHasOnboarded = useUserStore((state) => state.toggleHasOnboarded);
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Profile</Text>
+      <PlantlyButton
+        title="Devuelta a OnBoarding"
+        onPress={toggleHasOnboarded}
+      />
     </View>
   );
 }
@@ -15,8 +21,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.colorWhite,
-  },
-  text: {
-    fontSize: 24,
   },
 });
