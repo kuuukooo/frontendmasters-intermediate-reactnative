@@ -1,9 +1,10 @@
+import { theme } from "@/theme";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function ProfileScreen() {
+export default function Index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Profile</Text>
+      <Text>Edit app/index.tsx to edit this screen.</Text>
     </View>
   );
 }
@@ -11,11 +12,8 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: theme.colorWhite,
     alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  text: {
-    fontSize: 24,
+    justifyContent: "center",
   },
 });
