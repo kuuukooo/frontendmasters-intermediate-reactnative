@@ -1,12 +1,16 @@
 import { PlantlyButton } from "@/components/PlantlyButton";
 import { PlantlyImage } from "@/components/PlantlyImage";
+import { usePlantStore } from "@/store/plantsStore";
 import { theme } from "@/theme";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 export default function NewScreen() {
   const [name, setName] = useState<string>();
   const [days, setDays] = useState<string>();
+  const addPlant = usePlantStore((state) => state.addPlant);
+  const router = useRouter();
 
   const handleSubmit = () => {
     if (!name) {
@@ -26,6 +30,9 @@ export default function NewScreen() {
         "La frecuencia de riego debe de ser un número."
       );
     }
+
+    addPlant(name, Number(days));
+    router.navigate("/");
 
     console.log("Añadiendo planta...", name, days);
   };
