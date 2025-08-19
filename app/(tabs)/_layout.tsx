@@ -1,11 +1,13 @@
 import { useUserStore } from "@/store/userStore";
+import { theme } from "@/theme";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { Redirect, Tabs } from "expo-router";
+import { Link, Redirect, Tabs } from "expo-router";
+import { Pressable } from "react-native";
 
 export default function RootLayout() {
   const hasFinishedOnboarding = useUserStore(
-    // eslint-disable-next-line prettier/prettier
     (state) => state.hasFinishedOnboarding
   );
   if (!hasFinishedOnboarding) {
@@ -21,6 +23,17 @@ export default function RootLayout() {
           tabBarShowLabel: false,
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons name="leaf" size={size} color={color} />
+          ),
+          headerRight: () => (
+            <Link href="/new" asChild>
+              <Pressable style={{ marginRight: 18 }} hitSlop={20}>
+                <AntDesign
+                  name="plussquareo"
+                  size={24}
+                  color={theme.colorGreen}
+                />
+              </Pressable>
+            </Link>
           ),
         }}
       />
