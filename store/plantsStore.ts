@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from "expo-file-system";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -7,12 +8,17 @@ export type PlantType = {
   name: string;
   wateringFrequencyDays: number;
   lastWateredAtTimestamp?: number;
+  imageUri?: string;
 };
 
 type PlantsState = {
   nextId: number;
   plants: PlantType[];
-  addPlant: (name: string, wateringFrequencyDays: number) => void;
+  addPlant: (
+    name: string,
+    wateringFrequencyDays: number,
+    imageUri?: string
+  ) => Promise<void>;
   removePlant: (plantId: string) => void;
   waterPlant: (plantId: string) => void;
 };
@@ -22,7 +28,31 @@ export const usePlantStore = create(
     (set) => ({
       plants: [],
       nextId: 1,
-      addPlant: (name: string, wateringFrequencyDays: number) => {
+      addPlant: async (
+        name: string,
+        wateringFrequencyDays: number,
+        imageUri?: string
+      ) => {
+        let savedImageUri: string | undefined;
+
+        if (imageUri) {
+          const savedImagePath =
+            FileSystem.documentDirectory +
+            `${new Date().getTime()}-${imageUri.split("/").slice(-1)[0]}`;
+
+          try {
+            await FileSystem.copyAsync({
+              from: imageUri,
+              to: savedImagePath,
+            });
+            savedImageUri = savedImagePath;
+          } catch (error) {
+            console.error("Error saving image:", error);
+            // Si hay error guardando la imagen, continuamos sin ella
+            savedImageUri = undefined;
+          }
+        }
+
         return set((state) => {
           return {
             ...state,
@@ -32,6 +62,7 @@ export const usePlantStore = create(
                 id: String(state.nextId),
                 name,
                 wateringFrequencyDays,
+                imageUri: savedImageUri,
               },
               ...state.plants,
             ],

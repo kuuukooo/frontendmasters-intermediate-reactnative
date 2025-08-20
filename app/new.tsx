@@ -1,18 +1,28 @@
 import { PlantlyButton } from "@/components/PlantlyButton";
 import { PlantlyImage } from "@/components/PlantlyImage";
+import { PlantUploadBox } from "@/components/PlantUploadBox";
 import { usePlantStore } from "@/store/plantsStore";
 import { theme } from "@/theme";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 export default function NewScreen() {
   const [name, setName] = useState<string>();
   const [days, setDays] = useState<string>();
+  const [imageUri, setImageUri] = useState<string>();
   const addPlant = usePlantStore((state) => state.addPlant);
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name) {
       return Alert.alert("Error de Validacion", "Dale un nombre a tu planta");
     }
@@ -31,10 +41,19 @@ export default function NewScreen() {
       );
     }
 
-    addPlant(name, Number(days));
-    router.navigate("/");
+    try {
+      await addPlant(name, Number(days), imageUri);
+      router.navigate("/");
+      console.log("Añadiendo planta...", name, days, imageUri);
+    } catch (error) {
+      console.error("Error adding plant:", error);
+      Alert.alert("Error", "No se pudo agregar la planta. Inténtalo de nuevo.");
+    }
+  };
 
-    console.log("Añadiendo planta...", name, days);
+  const handleImageSelected = (uri: string) => {
+    setImageUri(uri);
+    console.log("Imagen seleccionada:", uri);
   };
 
   return (
@@ -43,25 +62,40 @@ export default function NewScreen() {
       contentContainerStyle={styles.contentContainer}
       keyboardShouldPersistTaps="handled"
     >
-      <View style={styles.centered}>
-        <PlantlyImage />
+      {imageUri ? (
+        <TouchableOpacity
+          style={styles.centered}
+          onPress={() => setImageUri(undefined)}
+          activeOpacity={0.8}
+        >
+          <PlantlyImage
+            imageUri={imageUri}
+            fixedSize={{ width: 360, height: 300 }}
+          />
+        </TouchableOpacity>
+      ) : (
+        <PlantUploadBox onImageSelected={handleImageSelected} />
+      )}
+
+      <View style={styles.buttonsContainer}>
+        <Text style={styles.label}>Nombre</Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          style={styles.input}
+          placeholder="E.j. Plantita"
+          autoCapitalize="words"
+        />
+        <Text style={styles.label}>Frecuencia de Riego (cada x días)</Text>
+        <TextInput
+          value={days}
+          onChangeText={setDays}
+          style={styles.input}
+          placeholder="E.j. 6"
+          keyboardType="number-pad"
+        />
       </View>
-      <Text style={styles.label}>Nombre</Text>
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-        placeholder="E.j. Plantita"
-        autoCapitalize="words"
-      />
-      <Text style={styles.label}>Frecuencia de Riego (cada x días)</Text>
-      <TextInput
-        value={days}
-        onChangeText={setDays}
-        style={styles.input}
-        placeholder="E.j. 6"
-        keyboardType="number-pad"
-      />
+
       <PlantlyButton title="Añadir planta" onPress={handleSubmit} />
     </KeyboardAwareScrollView>
   );
@@ -73,7 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colorWhite,
   },
   contentContainer: {
-    paddingTop: 24,
+    paddingTop: 100,
     paddingHorizontal: 24,
     paddingBottom: 100,
   },
@@ -89,7 +123,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 8,
   },
+  buttonsContainer: {
+    marginTop: 24,
+  },
   centered: {
     alignItems: "center",
+    marginBottom: 24,
   },
 });
