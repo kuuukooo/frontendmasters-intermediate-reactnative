@@ -44,3 +44,7 @@ yarn-error.*
 .prettierrc
 
 app-example
+
+#native projects
+ios
+android

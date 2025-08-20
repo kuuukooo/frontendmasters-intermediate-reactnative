@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tagline: {
-    fontSize: 16,
+    fontSize: 34,
     color: theme.colorWhite,
     textAlign: "center",
     marginBottom: 24,

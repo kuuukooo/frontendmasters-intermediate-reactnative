@@ -24,7 +24,7 @@ export function PlantlyImage({ size, imageUri, fixedSize }: Props) {
 
   const imageElement = (
     <Image
-      source={imageUri ? { uri: imageUri } : require("@/assets/plantly.png")}
+      source={imageUri ? { uri: imageUri } : require("@/assets/leaf.png")}
       style={{
         width: imageWidth,
         height: imageHeight,
